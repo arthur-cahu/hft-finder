@@ -1,5 +1,15 @@
 
 def preprocess(df_in):
+    """Preprocesses the data; note that some features get replaced.
+
+    Parameters
+    ----------
+    df_in : DataFrame
+
+    Returns
+    -------
+    DataFrame
+    """
     df_out = df_in.copy()
 
     # "Ratio columns", i.e. features #17-19, are NaN when the denominator is 0;
