@@ -1,8 +1,8 @@
 import pandas as pd
 
 
-def preprocess(df_x):
-    """Preprocesses the data; note that some features get replaced.
+def preprocess_x(df_x):
+    """Preprocesses the X data; note that some features get replaced.
 
     Parameters
     ----------
@@ -12,7 +12,7 @@ def preprocess(df_x):
     Returns
     -------
     DataFrame
-        Ready to train X table.
+        Ready to use X table.
     """
     df_out = df_x.copy()
 
@@ -28,9 +28,10 @@ def preprocess(df_x):
     # since the only NaN values left are time intervals, we set them to a max value of a day
     return df_out
 
+classes = {"NON HFT": 0, "MIX": 1, "HFT":2}
 
 def preprocess_y(df_x, df_y):
-    """Preprocesses the data; note that some features get replaced.
+    """Preprocesses the y data; note that some features get replaced.
 
     Parameters
     ----------
@@ -42,10 +43,11 @@ def preprocess_y(df_x, df_y):
     Returns
     -------
     Series
-        Corresponding `⟨HFT│MIX│Non−HFT⟩` y-value for each line of X.
+        Ready to train y-table; see `preprocessing.classes` for the class mapping.
     """
     # map each trader to its category:
     cat = df_y.set_index("Trader").squeeze()
 
-    s_out = pd.Series(cat[trader] for trader in df_x["Trader"])
+    s_out = pd.Series(classes[cat[trader]] for trader in df_x["Trader"])
+    s_out.set_axis(df_x.index, axis = 0, inplace=True)
     return s_out
