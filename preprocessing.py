@@ -24,7 +24,14 @@ def preprocess_x(df_x):
     df_out.drop(ratio_cols, axis="columns", inplace=True)
     df_out[inverted_ratio_cols] = (1 / df_x.loc[:, ratio_cols]).fillna(0)
     df_out.drop(["Share", "Day", "Trader"], axis=1, inplace=True)
-    df_out.fillna(24 * 3600, inplace=True)
+    
+    # frequencies instead of time differencials
+    dt_cols = [s for s in df_out.columns if 'dt' in s]
+    df_out.drop(dt_cols, axis="columns", inplace=True)
+    freq_cols = [s.replace("dt", "freq") for s in dt_cols]
+    df_out[freq_cols] = (1/df_x.loc[:, dt_cols]).fillna(0)
+
+    #df_out.fillna(24 * 3600, inplace=True)
     # since the only NaN values left are time intervals, we set them to a max value of a day
     return df_out
 
